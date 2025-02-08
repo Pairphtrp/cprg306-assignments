@@ -24,7 +24,6 @@ export default function NewItem() {
     console.log(item);
     alert(`Item added:\nName: ${name}\nQuantity: ${quantity}\nCategory: ${category}`);
     
-    // Reset the form
     setName("");
     setQuantity(1);
     setCategory("produce");
