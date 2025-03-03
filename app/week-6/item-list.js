@@ -1,90 +1,64 @@
-import React from "react";
+"use client";
+import { useState } from "react";
 import Item from "./item";
+import itemsData from "./items.json";
 
-const item1 = {
-  name: "milk, 4 L 🥛",
-  quantity: 1,
-  category: "dairy",
-};
+export default function ItemList() {
+  const [sortBy, setSortBy] = useState("name");
+  const [grouped, setGrouped] = useState(false);
 
-const item2 = {
-  name: "bread 🍞",
-  quantity: 2,
-  category: "bakery",
-};
+  const sortedItems = [...itemsData].sort((a, b) => {
+    if (sortBy === "name") return a.name.localeCompare(b.name);
+    if (sortBy === "category") return a.category.localeCompare(b.category);
+    return 0;
+  });
 
-const item3 = {
-  name: "eggs, dozen 🥚",
-  quantity: 2,
-  category: "dairy",
-};
+  const groupedItems = sortedItems.reduce((acc, item) => {
+    if (!acc[item.category]) acc[item.category] = [];
+    acc[item.category].push(item);
+    return acc;
+  }, {});
 
-const item4 = {
-  name: "bananas 🍌",
-  quantity: 6,
-  category: "produce",
-};
-
-const item5 = {
-  name: "broccoli 🥦",
-  quantity: 3,
-  category: "produce",
-};
-
-const item6 = {
-  name: "chicken breasts, 1 kg 🍗",
-  quantity: 1,
-  category: "meat",
-};
-
-const item7 = {
-  name: "pasta sauce 🍝",
-  quantity: 3,
-  category: "canned goods",
-};
-
-const item8 = {
-  name: "spaghetti, 454 g 🍝",
-  quantity: 2,
-  category: "dry goods",
-};
-
-const item9 = {
-  name: "toilet paper, 12 pack 🧻",
-  quantity: 1,
-  category: "household",
-};
-
-const item10 = {
-  name: "paper towels, 6 pack",
-  quantity: 1,
-  category: "household",
-};
-
-const item11 = {
-  name: "dish soap 🍽️",
-  quantity: 1,
-  category: "household",
-};
-
-const item12 = {
-  name: "hand soap 🧼",
-  quantity: 4,
-  category: "household",
-};
-
-const items = [
-  item1, item2, item3, item4, item5, item6, item7, item8, item9, item10, item11, item12
-];
-
-const ItemList = () => {
   return (
-    <ul className="space-y-3 p-4 bg-blue-100 rounded-lg">
-      {items.map((item, index) => (
-        <Item key={index} {...item} />
-      ))}
-    </ul>
+    <div>
+      <div className="mb-4">
+        <button
+          className={`mr-2 px-4 py-2 border ${sortBy === "name" ? "bg-blue-500" : "bg-gray-900"}`}
+          onClick={() => {
+            setSortBy("name");
+            setGrouped(false);
+          }}
+        >
+          Sort by Name
+        </button>
+        <button
+          className={`mr-2 px-4 py-2 border ${sortBy === "category" ? "bg-blue-500" : "bg-gray-900"}`}
+          onClick={() => {
+            setSortBy("category");
+            setGrouped(false);
+          }}
+        >
+          Sort by Category
+        </button>
+        <button
+          className={`px-4 py-2 border ${grouped ? "bg-blue-500" : "bg-gray-900"}`}
+          onClick={() => setGrouped(true)}
+        >
+          Group by Category
+        </button>
+      </div>
+      <ul>
+        {grouped
+          ? Object.keys(groupedItems).map((category) => (
+              <div key={category}>
+                <h2 className="text-lg font-semibold capitalize mt-4 text-black">{category}</h2>
+                {groupedItems[category].map((item) => (
+                  <Item key={item.id} {...item} />
+                ))}
+              </div>
+            ))
+          : sortedItems.map((item) => <Item key={item.id} {...item} />)}
+      </ul>
+    </div>
   );
-};
-
-export default ItemList;
+}
