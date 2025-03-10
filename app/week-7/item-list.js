@@ -1,63 +1,37 @@
 "use client";
 import { useState } from "react";
 import Item from "./item";
-import itemsData from "./items.json";
 
-export default function ItemList() {
+export default function ItemList({ items }) {
   const [sortBy, setSortBy] = useState("name");
-  const [grouped, setGrouped] = useState(false);
 
-  const sortedItems = [...itemsData].sort((a, b) => {
+  const sortedItems = [...items].sort((a, b) => {
     if (sortBy === "name") return a.name.localeCompare(b.name);
     if (sortBy === "category") return a.category.localeCompare(b.category);
     return 0;
   });
 
-  const groupedItems = sortedItems.reduce((acc, item) => {
-    if (!acc[item.category]) acc[item.category] = [];
-    acc[item.category].push(item);
-    return acc;
-  }, {});
-
   return (
-    <div>
-      <div className="mb-4">
+    <div className="mt-4">
+      <div className="flex gap-2 mb-4">
+        <span>Sort by:</span>
         <button
-          className={`mr-2 px-4 py-2 border ${sortBy === "name" ? "bg-blue-500" : "bg-gray-900"}`}
-          onClick={() => {
-            setSortBy("name");
-            setGrouped(false);
-          }}
+          className={`px-4 py-2 text-white rounded ${sortBy === "name" ? "bg-orange-500" : "bg-gray-700"}`}
+          onClick={() => setSortBy("name")}
         >
-          Sort by Name
+          Name
         </button>
         <button
-          className={`mr-2 px-4 py-2 border ${sortBy === "category" ? "bg-blue-500" : "bg-gray-900"}`}
-          onClick={() => {
-            setSortBy("category");
-            setGrouped(false);
-          }}
+          className={`px-4 py-2 text-white rounded ${sortBy === "category" ? "bg-orange-500" : "bg-gray-700"}`}
+          onClick={() => setSortBy("category")}
         >
-          Sort by Category
-        </button>
-        <button
-          className={`px-4 py-2 border ${grouped ? "bg-blue-500" : "bg-gray-900"}`}
-          onClick={() => setGrouped(true)}
-        >
-          Group by Category
+          Category
         </button>
       </div>
-      <ul>
-        {grouped
-          ? Object.keys(groupedItems).map((category) => (
-              <div key={category}>
-                <h2 className="text-lg font-semibold capitalize mt-4 text-black">{category}</h2>
-                {groupedItems[category].map((item) => (
-                  <Item key={item.id} {...item} />
-                ))}
-              </div>
-            ))
-          : sortedItems.map((item) => <Item key={item.id} {...item} />)}
+      <ul className="space-y-4">
+        {sortedItems.map((item) => (
+          <Item key={item.id} {...item} />
+        ))}
       </ul>
     </div>
   );

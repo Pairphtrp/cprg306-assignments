@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function NewItem() {
+export default function NewItem({ onAddItem }) {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [category, setCategory] = useState("produce");
@@ -11,19 +11,18 @@ export default function NewItem() {
   const increment = () => quantity < 20 && setQuantity(quantity + 1);
   const decrement = () => quantity > 1 && setQuantity(quantity - 1);
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const item = {
+    if (!name.trim()) return;
+    
+    const newItem = {
       name,
       quantity,
       category,
     };
 
-    console.log(item);
-    alert(`Item added:\nName: ${name}\nQuantity: ${quantity}\nCategory: ${category}`);
-    
+    onAddItem(newItem);
     setName("");
     setQuantity(1);
     setCategory("produce");
@@ -66,7 +65,7 @@ export default function NewItem() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="px-4 py-2 rounded-lg bg-gray-500"
+          className="px-4 py-2 rounded-lg bg-gray-500 text-white"
         >
           <option value="produce">Produce</option>
           <option value="dairy">Dairy</option>
