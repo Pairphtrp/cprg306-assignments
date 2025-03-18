@@ -1,18 +1,13 @@
 "use client";
-import React from "react";
 
-const Item = ({ name, quantity, category }) => {
+export default function Item({ name, quantity, category, onSelect }) {
   return (
-    <li className="border p-3 rounded-lg shadow-sm bg-white flex justify-between items-start">
-    <div>
-      <span className="font-semibold text-green-600 block">{name}</span>
-      <span className="text-gray-600"> buy {quantity} in {category}</span>
-    </div>
-    
-  </li>
-);
-};
-export default Item;
-
-
-
+    <li
+      className="border border-gray-600 p-3 rounded-md cursor-pointer hover:bg-gray-700"
+      onClick={() => onSelect({ name, quantity, category })}
+    >
+      <div className="font-semibold text-lg">{name}</div>
+      <div className="text-sm text-gray-300">Buy {quantity} in {category}</div>
+    </li>
+  );
+}
